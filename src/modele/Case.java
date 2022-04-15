@@ -67,11 +67,10 @@ public class Case {
             }
             else if (voisinSelected.getValeur() == this.valeur) {
                 setValeur(valeur*2);
-                // La fonction supprime la case d'arrivée
-                // TODO : La fonction ne supprime pas la case dans la table de hashage (que dans le tableau)
+                jeu.setScore(jeu.getScore() + valeur); // A chaque fusion on ajoute le résultat au score
                 jeu.moveCase(dir, this);
                 hasMoved = true;
-                IsFinish = true; // TODO : Vérifier si necessaire
+                IsFinish = true; // TODO : J'assume que ça s'arrête à la fusion, mais il semble que ça fusionne plusieurs cases d'un coup
             }
             else if (voisinSelected.getValeur() == -1 || voisinSelected.getValeur() != this.valeur) {
                 IsFinish = true;

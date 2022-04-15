@@ -11,12 +11,14 @@ public class Jeu extends Observable {
     private Case[][] tabCases;
     private HashMap<Case, Point> hashCases;
     private Etat etatJeu;
+    private int score;
     private static int WIN_SCORE = 2048;
 
     public Jeu(int size) {
         tabCases = new Case[size][size];
         hashCases = new HashMap<Case, Point>();
         etatJeu = Etat.EnCours;
+        score = 0;
         depart();
     }
 
@@ -28,20 +30,20 @@ public class Jeu extends Observable {
         return hashCases.get(caseObj);
     }
 
-    public Case getCase(int i, int j) {
-        if (IsInBound(i, j))
-            return tabCases[i][j];
+    public Case getCase(Point coord) {
+        if (IsInBound(coord))
+            return tabCases[coord.x][coord.y];
         else
             return new Case(-1, this); // Placeholder pour dire que c'est une bordure
     }
 
-    public boolean IsInBound(int i, int j) {
-        return i >= 0 && j >= 0 && i < tabCases.length && j < tabCases[i].length;
+    public boolean IsInBound(Point coord) {
+        return coord.x >= 0 && coord.y >= 0 && coord.x < tabCases.length && coord.y < tabCases[coord.x].length;
     }
 
     public Case getVoisin(Point currentCoord, Direction dir) {
         Point voisinCoord = getCoordVoisin(currentCoord, dir);
-        return getCase(voisinCoord.x, voisinCoord.y);
+        return getCase(voisinCoord);
     }
 
     public Point getCoordVoisin(Point currentCoord, Direction dir) {
@@ -63,9 +65,17 @@ public class Jeu extends Observable {
         return coordVoisin;
     }
 
-    public void AddCase(int valeur, int i, int j) {
-        tabCases[i][j] = new Case(valeur, this);
-        hashCases.put(tabCases[i][j], new Point(i, j));
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int val) {
+        score = val;
+    }
+
+    public void AddCase(int valeur, Point coord) {
+        tabCases[coord.x][coord.y] = new Case(valeur, this);
+        hashCases.put(tabCases[coord.x][coord.y], coord);
     }
 
     /**
@@ -77,7 +87,7 @@ public class Jeu extends Observable {
         Point currentCase = getCoordinate(caseObj);
         Point newCase = getCoordVoisin(currentCase, dir);
 
-        if (IsInBound(newCase.x, newCase.y)) {
+        if (IsInBound(newCase)) {
             // On enlève la case d'arrivée s'il y en a une
             if (tabCases[newCase.x][newCase.y] != null)
                 hashCases.remove(tabCases[newCase.x][newCase.y]);
@@ -97,7 +107,7 @@ public class Jeu extends Observable {
             randJ = rand.nextInt(tabCases[randI].length);
         } while (tabCases[randI][randJ] != null);
 
-        AddCase(val, randI, randJ);
+        AddCase(val, new Point(randI, randJ));
     }
 
     public boolean deplacementPossible() {
@@ -183,7 +193,7 @@ public class Jeu extends Observable {
 
                 // TODO : Gagner partie si score atteint
                 // if (bestScore == WIN_SCORE)
-                // gamestate = State.won;
+                // etatJeu = Etat.Gagnee;
 
                 // TODO : Comptabiliser score
 
@@ -192,7 +202,5 @@ public class Jeu extends Observable {
             }
 
         }.start();
-
-
     }
 }
