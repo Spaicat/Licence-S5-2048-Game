@@ -64,6 +64,9 @@ public class Jeu extends Observable {
         }
         return coordVoisin;
     }
+    public Etat getEtatJeu() {
+        return etatJeu;
+    }
 
     public int getScore() {
         return score;
