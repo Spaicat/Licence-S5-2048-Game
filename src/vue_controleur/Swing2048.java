@@ -20,7 +20,6 @@ public class Swing2048 extends JFrame implements Observer {
     private ScorePanel scorePanel;
     private ScorePanel highScorePanel;
     private JPanel gamePane;
-    private KeyAdapter keyAdapter;
     private Jeu jeu;
 
     public Swing2048(Jeu _jeu) {
@@ -142,6 +141,7 @@ public class Swing2048 extends JFrame implements Observer {
                     }
                 }
                 scorePanel.setScoreLabel(jeu.getScore());
+                highScorePanel.setScoreLabel(jeu.getHighScore());
             }
         });
     }

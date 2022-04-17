@@ -68,6 +68,7 @@ public class Case {
             else if (voisinSelected.getValeur() == this.valeur) {
                 setValeur(valeur*2);
                 jeu.setScore(jeu.getScore() + valeur); // A chaque fusion on ajoute le résultat au score
+                if (jeu.getScore() > jeu.getHighScore()) jeu.setHighScore(jeu.getScore());
                 jeu.moveCase(dir, this);
                 hasMoved = true;
                 IsFinish = true; // TODO : J'assume que ça s'arrête à la fusion, mais il semble que ça fusionne plusieurs cases d'un coup

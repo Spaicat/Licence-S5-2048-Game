@@ -1,10 +1,12 @@
 package vue_controleur;
 
 import modele.Case;
+import modele.Direction;
 import modele.Jeu;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -16,7 +18,6 @@ public class Console2048 extends Thread implements Observer {
 
     public Console2048(Jeu _jeu) {
         jeu = _jeu;
-
     }
 
 
@@ -61,42 +62,56 @@ public class Console2048 extends Thread implements Observer {
                             e.printStackTrace();
                         }
 
-                        if (s.equals("4") || s.equals("8") || s.equals("6") || s.equals("2") ) {
-                            end = true;
-                            jeu.depart();
+                        switch (Objects.requireNonNull(s)) {
+                            case "8": jeu.action(Direction.haut); end = true; break;
+                            case "2": jeu.action(Direction.bas); end = true; break;
+                            case "4": jeu.action(Direction.gauche); end = true; break;
+                            case "6": jeu.action(Direction.droite); end = true; break;
                         }
                     }
-
-
                 }
-
             }
         }.start();
-
-
     }
+
+    public static String centerString (int width, String s) {
+        return String.format("%-" + width  + "s", String.format("%" + (s.length() + (width - s.length()) / 2) + "s", s));
+    }
+
+    private void printSeparateLine() {
+        for (int j = 0; j < jeu.getSize(); j++) {
+            System.out.print("——————————");
+        }
+        System.out.println("—");
+    }
+
+    private void printScore() {
+        String scoreString = "Score : " + jeu.getScore() + " — Meilleur : " + jeu.getHighScore();
+        System.out.println(centerString(10*jeu.getSize(), scoreString));
+    }
+
 
     /**
      * Correspond à la fonctionnalité de Vue : affiche les données du modèle
      */
     private void afficher()  {
+        System.out.print("\033[H\033[J"); // permet d'effacer la console (ne fonctionne pas toujours depuis la console de l'IDE)
 
-
-        System.out.printf("\033[H\033[J"); // permet d'effacer la console (ne fonctionne pas toujours depuis la console de l'IDE)
-
+        printScore();
+        printSeparateLine();
         for (int i = 0; i < jeu.getSize(); i++) {
             for (int j = 0; j < jeu.getSize(); j++) {
                 Case c = jeu.getCase(new Point(i, j));
+                String out = "-";
                 if (c != null) {
-                    System.out.format("%5.5s", c.getValeur());
-                } else {
-                    System.out.format("%5.5s", "");
+                    //System.out.format("%5.5s", c.getValeur());
+                    out = "" + c.getValeur();
                 }
-
+                System.out.print("|" + centerString(9, out));
             }
-            System.out.println();
+            System.out.println("|");
+            printSeparateLine();
         }
-
     }
 
     private void raffraichir() {

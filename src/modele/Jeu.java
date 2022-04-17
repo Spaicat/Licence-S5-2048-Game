@@ -12,13 +12,25 @@ public class Jeu extends Observable {
     private HashMap<Case, Point> hashCases;
     private Etat etatJeu;
     private int score;
+    private int highScore;
+    private GestionFichier gestionFile;
     private static int WIN_SCORE = 2048;
 
     public Jeu(int size) {
-        tabCases = new Case[size][size];
-        hashCases = new HashMap<Case, Point>();
-        etatJeu = Etat.EnCours;
-        score = 0;
+        this.gestionFile = new GestionFichier("data", "highScore");
+        HashMap<String, String> dataFile = gestionFile.getDataFile();
+
+        this.highScore = 0;
+        if (dataFile.size() != 0) {
+            String rawHighScore = dataFile.get("highScore");
+            if (!rawHighScore.equals(""))
+                this.highScore = Integer.parseInt(rawHighScore);
+        }
+
+        this.tabCases = new Case[size][size];
+        this.hashCases = new HashMap<>();
+        this.etatJeu = Etat.EnCours;
+        this.score = 0;
         depart();
     }
 
@@ -47,22 +59,12 @@ public class Jeu extends Observable {
     }
 
     public Point getCoordVoisin(Point currentCoord, Direction dir) {
-        Point coordVoisin = null;
-        switch (dir) {
-            case haut:
-                coordVoisin = new Point(currentCoord.x - 1, currentCoord.y);
-                break;
-            case bas:
-                coordVoisin = new Point(currentCoord.x + 1, currentCoord.y);
-                break;
-            case gauche:
-                coordVoisin = new Point(currentCoord.x, currentCoord.y - 1);
-                break;
-            case droite:
-                coordVoisin = new Point(currentCoord.x, currentCoord.y + 1);
-                break;
-        }
-        return coordVoisin;
+        return switch (dir) {
+            case haut -> new Point(currentCoord.x - 1, currentCoord.y);
+            case bas -> new Point(currentCoord.x + 1, currentCoord.y);
+            case gauche -> new Point(currentCoord.x, currentCoord.y - 1);
+            case droite -> new Point(currentCoord.x, currentCoord.y + 1);
+        };
     }
     public Etat getEtatJeu() {
         return etatJeu;
@@ -76,6 +78,13 @@ public class Jeu extends Observable {
         score = val;
     }
 
+    public int getHighScore() {
+        return highScore;
+    }
+
+    public void setHighScore(int val) {
+        highScore = val;
+    }
     public void AddCase(int valeur, Point coord) {
         tabCases[coord.x][coord.y] = new Case(valeur, this);
         hashCases.put(tabCases[coord.x][coord.y], coord);
@@ -187,18 +196,17 @@ public class Jeu extends Observable {
                     Random rand = new Random();
                     int valRand = rand.nextInt(2) == 1 ? 2 : 4;
                     addRandomCase(valRand);
+                    if (score >= highScore)
+                        gestionFile.saveDataFile("highScore", "" + highScore);
                 }
 
                 if (!deplacementPossible()) {
                     etatJeu = Etat.Perdu;
-                    System.out.println("Perdu !");
                 }
 
                 // TODO : Gagner partie si score atteint
                 // if (bestScore == WIN_SCORE)
                 // etatJeu = Etat.Gagnee;
-
-                // TODO : Comptabiliser score
 
                 setChanged();
                 notifyObservers();
