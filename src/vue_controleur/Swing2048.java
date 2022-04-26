@@ -168,7 +168,7 @@ public class Swing2048 extends JFrame implements Observer {
         String MOVE_LEFT = "move left";
         String MOVE_RIGHT = "move right";
 
-        // Utilisation de keybindings au lieu de keylisteners car sinon cela pose des problème de focus (quand on change de JPanel)
+        // Utilisation de keybindings au lieu de keylisteners car sinon cela pose des problèmes de focus (quand on change de JPanel)
         this.gamePane.getInputMap().put(KeyStroke.getKeyStroke("UP"), MOVE_UP);
         this.gamePane.getActionMap().put(MOVE_UP, new MoveAction(Direction.haut));
 

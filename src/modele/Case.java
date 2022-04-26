@@ -6,6 +6,7 @@ public class Case {
     private Jeu jeu;
     private int valeur;
     private Color couleur;
+    private boolean fusionner;
     private static final Color[] COULEURS_CASES = {
             Color.decode("#eee4da"), // 2
             Color.decode("#ede0c8"), // 4
@@ -26,23 +27,42 @@ public class Case {
 
     public Case(int _valeur, Jeu _jeu) {
         jeu = _jeu;
+        fusionner = false;
         setValeur(_valeur);
     }
 
     public int getValeur() {
         return valeur;
     }
+
+    /**
+     * Change la valeur tout en changeant la couleur de la case
+     * @param newVal La valeur de la case à changer
+     */
     public void setValeur(int newVal) {
         valeur = newVal;
-        int colorIndex = getExponentielValeur() - 1;
+        int colorIndex = getExponentielValeur() - 1; // On veut l'index, qui commence à 0 et pas à 1
         if (colorIndex >= 0 && colorIndex < COULEURS_CASES.length)
-            couleur = COULEURS_CASES[getExponentielValeur() - 1];
+            couleur = COULEURS_CASES[colorIndex];
         else
             couleur = COULEURS_CASES[0];
     }
     public Color getCouleur() {
         return couleur;
     }
+
+    public boolean isFusionner() {
+        return fusionner;
+    }
+
+    public void setFusionner(boolean fusionner) {
+        this.fusionner = fusionner;
+    }
+
+    /**
+     * Donne l'exponentiel de 2 par rapport à la valeur de la case, ex : val = 8 = 2³ donc exponentiel est 3
+     * @return L'exponentiel de 2 correspondant à la valeur
+     */
     public int getExponentielValeur() {
         int tempVal = valeur;
         int compteur = 0;
@@ -61,23 +81,24 @@ public class Case {
             // On récupère le voisin de notre case (celui dans la bonne direction)
             Case voisinSelected = jeu.getVoisin(currentCoord, dir);
 
+            // Il n'y a pas de voisin => case vide
             if (voisinSelected == null) {
                 jeu.moveCase(dir, this);
                 hasMoved = true;
             }
-            else if (voisinSelected.getValeur() == this.valeur) {
+            // Le voisin à la même valeur que la case et n'a pas déjà été fusionné à ce tour
+            else if (voisinSelected.getValeur() == this.valeur && !voisinSelected.isFusionner()) {
                 setValeur(valeur*2);
-                jeu.setScore(jeu.getScore() + valeur); // A chaque fusion on ajoute le résultat au score
+                jeu.setScore(jeu.getScore() + valeur); // À chaque fusion, on ajoute le résultat au score
                 if (jeu.getScore() > jeu.getHighScore()) jeu.setHighScore(jeu.getScore());
                 jeu.moveCase(dir, this);
                 hasMoved = true;
-                IsFinish = true; // TODO : J'assume que ça s'arrête à la fusion, mais il semble que ça fusionne plusieurs cases d'un coup
-            }
-            else if (voisinSelected.getValeur() == -1 || voisinSelected.getValeur() != this.valeur) {
                 IsFinish = true;
+                this.fusionner = true;
             }
+            // Le voisin est une bordure (valeur de -1), le voisin à une valeur différente de la case ou la case ne peut pas fusionner car le voisin l'a déjà été
             else {
-                voisinSelected.deplacer(dir);
+                IsFinish = true;
             }
         }
 

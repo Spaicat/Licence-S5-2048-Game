@@ -53,11 +53,23 @@ public class Jeu extends Observable {
         return coord.x >= 0 && coord.y >= 0 && coord.x < tabCases.length && coord.y < tabCases[coord.x].length;
     }
 
+    /**
+     * Avoir la case voisine à la case actuelle
+     * @param currentCoord Coordonnées de la case dont on veut le voisin
+     * @param dir Direction dans laquelle se trouve le voisin par rapport à la case
+     * @return La case correspondant au voisin
+     */
     public Case getVoisin(Point currentCoord, Direction dir) {
         Point voisinCoord = getCoordVoisin(currentCoord, dir);
         return getCase(voisinCoord);
     }
 
+    /**
+     * Avoir les coordonnées, dans le tableau des cases, du voisin d'une case
+     * @param currentCoord Coordonnées de la case dont on veut le voisin
+     * @param dir Direction dans laquelle se trouve le voisin par rapport à la case
+     * @return Les coordonnées du voisin
+     */
     public Point getCoordVoisin(Point currentCoord, Direction dir) {
         return switch (dir) {
             case haut -> new Point(currentCoord.x - 1, currentCoord.y);
@@ -91,8 +103,8 @@ public class Jeu extends Observable {
     }
 
     /**
-     * Déplace la case d'une "unité" vers la direction souhaité et supprime la case d'arrivée
-     * @param dir Direction dans laquel la case va bouger
+     * Déplace la case d'une "unité" vers la direction souhaitée et supprime la case d'arrivée
+     * @param dir Direction dans laquelle la case va bouger
      * @param caseObj Case à déplacer
      */
     public void moveCase(Direction dir, Case caseObj) {
@@ -110,6 +122,10 @@ public class Jeu extends Observable {
         }
     }
 
+    /**
+     * Ajoute une case à un endroit aléatoire dans le jeu
+     * @param val Valeur de la case à ajouter
+     */
     public void addRandomCase(int val) {
         int randI;
         int randJ;
@@ -122,6 +138,10 @@ public class Jeu extends Observable {
         AddCase(val, new Point(randI, randJ));
     }
 
+    /**
+     * Permet de savoir s'il reste des déplacements possibles dans le jeu
+     * @return Vrai si des coups sont encore possible
+     */
     public boolean deplacementPossible() {
         boolean isPossible = false;
         for (Map.Entry<Case, Point> entry : hashCases.entrySet()) {
@@ -140,6 +160,18 @@ public class Jeu extends Observable {
         return isPossible;
     }
 
+    /**
+     * Dire à toutes les cases qu'elles peuvent de nouveau se fusionner
+     */
+    public void resetFusion() {
+        for (Case caseF : hashCases.keySet()) {
+            caseF.setFusionner(false);
+        }
+    }
+
+    /**
+     * Utiliser au départ afin de placer les 2 premières cases
+     */
     public void depart() {
         new Thread() { // permet de libérer le processus graphique ou de la console
             public void run() {
@@ -191,11 +223,15 @@ public class Jeu extends Observable {
                         break;
                 }
 
+                resetFusion();
+
                 if (hasMoved) {
                     // On fait apparaitre une nouvelle case : de valeur 2 ou 4
                     Random rand = new Random();
                     int valRand = rand.nextInt(2) == 1 ? 2 : 4;
                     addRandomCase(valRand);
+
+                    // S'il y a un meilleur score on le sauvegarde
                     if (score >= highScore)
                         gestionFile.saveDataFile("highScore", "" + highScore);
                 }
