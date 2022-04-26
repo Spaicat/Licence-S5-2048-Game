@@ -40,6 +40,18 @@ public class Swing2048 extends JFrame implements Observer {
         initBoard();
         mainPane.add(gamePane);
 
+        /* ----- Bouton pour revenir au menu ----- */
+        JButton menuBtn = new JButton("Menu");
+        Swing2048 that = this;
+        menuBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new Menu2048();
+                that.dispose();
+            }
+        });
+        mainPane.add(menuBtn, BorderLayout.SOUTH);
+
         // Démarre les processus
         setContentPane(mainPane);
         ajouterEcouteurClavier();
@@ -58,7 +70,7 @@ public class Swing2048 extends JFrame implements Observer {
                 tabC[i][j].setBackground(Color.decode("#cdc1b4"));
                 tabC[i][j].setBorder(border);
                 tabC[i][j].setHorizontalAlignment(SwingConstants.CENTER);
-                tabC[i][j].setFont(new Font("Montserrat", Font.BOLD, 14));
+                tabC[i][j].setFont(new Font("", Font.BOLD, 14));
 
                 boardPane.add(tabC[i][j]);
             }
@@ -66,45 +78,47 @@ public class Swing2048 extends JFrame implements Observer {
         gamePane.add(boardPane, BorderLayout.CENTER);
     }
 
+    private void putRecommencerMenu() {
+        JPanel popup = new JPanel();
+        popup.setLayout(new GridBagLayout());
+
+        JLabel popupText = new JLabel("Vous avez perdu !", SwingConstants.CENTER);
+        popupText.setOpaque(true);
+
+        JButton popupBtn = new JButton("Recommencer");
+        Swing2048 that = this;
+        popupBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gamePane.removeAll();
+                jeu = new Jeu(jeu.getSize());
+                initBoard();
+                jeu.addObserver(that);
+                rafraichir();
+            }
+        });
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        popup.add(popupText, gbc);
+        popup.add(popupBtn, gbc);
+        popup.setOpaque(true);
+
+        gamePane.removeAll();
+        gamePane.add(popup);
+        gamePane.revalidate();
+    }
+
     /**
      * Correspond à la fonctionnalité de Vue : affiche les données du modèle
      */
     private void rafraichir()  {
-        Swing2048 that = this;
         SwingUtilities.invokeLater(new Runnable() { // demande au processus graphique de réaliser le traitement
             @Override
             public void run() {
                 if (jeu.getEtatJeu() == Etat.Perdu) {
-
-                    // Menu pour recommencer
-                    JPanel popup = new JPanel();
-                    popup.setLayout(new GridBagLayout());
-
-                    JLabel popupText = new JLabel("Vous avez perdu !", SwingConstants.CENTER);
-                    popupText.setOpaque(true);
-
-                    JButton popupBtn = new JButton("Recommencer");
-                    popupBtn.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            gamePane.removeAll();
-                            jeu = new Jeu(jeu.getSize());
-                            initBoard();
-                            jeu.addObserver(that);
-                            rafraichir();
-                        }
-                    });
-
-                    GridBagConstraints gbc = new GridBagConstraints();
-                    gbc.gridwidth = GridBagConstraints.REMAINDER;
-                    gbc.fill = GridBagConstraints.HORIZONTAL;
-                    popup.add(popupText, gbc);
-                    popup.add(popupBtn, gbc);
-                    popup.setOpaque(true);
-
-                    gamePane.removeAll();
-                    gamePane.add(popup);
-                    gamePane.revalidate();
+                    putRecommencerMenu();
                 }
                 else {
                     for (int i = 0; i < jeu.getSize(); i++) {

@@ -13,7 +13,7 @@ public class TopInfoPanel extends JPanel {
 
         // Titre
         JLabel titleLabel = new JLabel(title);
-        titleLabel.setFont(new Font("Montserrat Semibold", Font.PLAIN, 36));
+        titleLabel.setFont(new Font("", Font.BOLD, 40));
         titleLabel.setForeground(Color.decode("#6B4B28"));
         titleLabel.setBorder(new EmptyBorder(20, 20, 20, 20));
         this.add(titleLabel);

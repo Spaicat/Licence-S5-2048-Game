@@ -14,12 +14,12 @@ public class ScorePanel extends JPanel {
         scorePane.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         JLabel scoreTitle = new JLabel(name);
-        scoreTitle.setFont(new Font("Montserrat", Font.BOLD, 14));
+        scoreTitle.setFont(new Font("", Font.BOLD, 16));
         scoreTitle.setForeground(Color.decode("#6B4B28"));
         scoreTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         this.scoreLabel = new JLabel("" + score);
-        scoreLabel.setFont(new Font("Montserrat", Font.BOLD, 20));
+        scoreLabel.setFont(new Font("", Font.BOLD, 20));
         scoreLabel.setForeground(Color.decode("#6B4B28"));
         scoreLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 

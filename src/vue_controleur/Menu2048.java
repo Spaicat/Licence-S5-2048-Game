@@ -27,7 +27,7 @@ public class Menu2048 extends JFrame {
 
         // Titre
         JLabel titleLabel = new JLabel("2048 Game");
-        titleLabel.setFont(new Font("Montserrat Black", Font.PLAIN, 36));
+        titleLabel.setFont(new Font("", Font.BOLD, 40));
         titleLabel.setForeground(Color.decode("#6B4B28"));
         titleLabel.setBorder(new EmptyBorder(0, 20, 20, 20));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -36,10 +36,13 @@ public class Menu2048 extends JFrame {
         // Menu avec les boutons
         JPanel selectionPane = new JPanel();
         selectionPane.setLayout(new BoxLayout(selectionPane, BoxLayout.Y_AXIS));
+        selectionPane.setBackground(Color.decode("#cdc1b4"));
+        selectionPane.setBorder(new EmptyBorder(20, 20, 20, 20));
         selectionPane.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Panel pour la selection de la taille
         JPanel selectSizePanel = new JPanel();
+        selectSizePanel.setBackground(Color.decode("#cdc1b4"));
         JLabel selectSizeLabel = new JLabel("Choisir la taille du jeu :");
         SpinnerModel model = new SpinnerNumberModel(4, 2, 10, 1);
         this.gameSizeSpinner = new JSpinner(model);
@@ -51,13 +54,13 @@ public class Menu2048 extends JFrame {
         // Bouton jeu
         JButton jouerBtn = new JButton("Jouer");
         jouerBtn.addActionListener(new PlayListener(this));
-        jouerBtn.setFont(new Font("Montserrat", Font.BOLD, 16));
+        jouerBtn.setFont(new Font("", Font.BOLD, 16));
         jouerBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Bouton quitter
         JButton quitterBtn = new JButton("Quitter");
         quitterBtn.addActionListener(new CloseListener());
-        quitterBtn.setFont(new Font("Montserrat", Font.BOLD, 16));
+        quitterBtn.setFont(new Font("", Font.BOLD, 16));
         quitterBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Rassemblement des elements du menu
