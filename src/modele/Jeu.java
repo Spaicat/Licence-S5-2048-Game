@@ -17,13 +17,14 @@ public class Jeu extends Observable {
     private static int WIN_SCORE = 2048;
 
     public Jeu(int size) {
-        this.gestionFile = new GestionFichier("data", "highScore");
+        double valueGame = 128*Math.pow(2, size);
+        this.gestionFile = new GestionFichier("data", "highScore" + (int)valueGame);
         HashMap<String, String> dataFile = gestionFile.getDataFile();
 
         this.highScore = 0;
         if (dataFile.size() != 0) {
-            String rawHighScore = dataFile.get("highScore");
-            if (!rawHighScore.equals(""))
+            String rawHighScore = dataFile.get("highScore" + (int)valueGame);
+            if (rawHighScore != null && !rawHighScore.equals(""))
                 this.highScore = Integer.parseInt(rawHighScore);
         }
 
@@ -232,8 +233,10 @@ public class Jeu extends Observable {
                     addRandomCase(valRand);
 
                     // S'il y a un meilleur score on le sauvegarde
-                    if (score >= highScore)
-                        gestionFile.saveDataFile("highScore", "" + highScore);
+                    if (score >= highScore) {
+                        double valueGame = 128*Math.pow(2, getSize());
+                        gestionFile.saveDataFile("highScore" + (int)valueGame, "" + highScore);
+                    }
                 }
 
                 if (!deplacementPossible()) {

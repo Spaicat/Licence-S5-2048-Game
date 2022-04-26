@@ -1,5 +1,6 @@
 import modele.Jeu;
 import vue_controleur.Console2048;
+import vue_controleur.Menu2048;
 import vue_controleur.Swing2048;
 
 public class Main {
@@ -18,10 +19,6 @@ public class Main {
     }
 
     public static void mainSwing() {
-        Jeu jeu = new Jeu(4);
-        Swing2048 vue = new Swing2048(jeu);
-        jeu.addObserver(vue);
-
-        vue.setVisible(true);
+        new Menu2048();
     }
 }

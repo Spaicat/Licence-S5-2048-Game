@@ -17,8 +17,7 @@ public class Swing2048 extends JFrame implements Observer {
     private static final int PIXEL_PER_SQUARE = 100;
     // tableau de cases : i, j -> case graphique
     private JLabel[][] tabC;
-    private ScorePanel scorePanel;
-    private ScorePanel highScorePanel;
+    private TopInfoPanel topInfoPanel;
     private JPanel gamePane;
     private Jeu jeu;
 
@@ -32,28 +31,9 @@ public class Swing2048 extends JFrame implements Observer {
         JPanel mainPane = (JPanel) getContentPane();
 
         /* ----- Informations (score, record ...) ----- */
-        JPanel infoPane = new JPanel();
-        infoPane.setLayout(new BoxLayout(infoPane, BoxLayout.X_AXIS));
-        // Titre
-        JLabel titleLabel = new JLabel("2048");
-        titleLabel.setFont(new Font("Montserrat Semibold", Font.PLAIN, 36));
-        titleLabel.setForeground(Color.decode("#6B4B28"));
-        titleLabel.setBorder(new EmptyBorder(20, 20, 20, 20));
-        infoPane.add(titleLabel);
-
-        JPanel scorePane = new JPanel();
-        // Score
-        this.scorePanel = new ScorePanel("Score", 0);
-        scorePane.add(scorePanel);
-        // Record
-        this.highScorePanel = new ScorePanel("Meilleur", 0);
-        scorePane.add(highScorePanel);
-        scorePane.setMaximumSize(scorePane.getPreferredSize());
-
-        infoPane.add(Box.createHorizontalGlue()); // Mettre un espace entre le titre et les scores
-        infoPane.add(scorePane);
-
-        mainPane.add(infoPane, BorderLayout.NORTH);
+        double titleValue = 128*Math.pow(2, jeu.getSize());
+        this.topInfoPanel = new TopInfoPanel("" + (int)titleValue);
+        mainPane.add(topInfoPanel, BorderLayout.NORTH);
 
         /* ----- Plateau 2048 ----- */
         this.gamePane = new JPanel(new BorderLayout());
@@ -95,7 +75,8 @@ public class Swing2048 extends JFrame implements Observer {
             @Override
             public void run() {
                 if (jeu.getEtatJeu() == Etat.Perdu) {
-                    // TODO : Classe pour rendre ça plus propre
+
+                    // Menu pour recommencer
                     JPanel popup = new JPanel();
                     popup.setLayout(new GridBagLayout());
 
@@ -140,8 +121,8 @@ public class Swing2048 extends JFrame implements Observer {
                         }
                     }
                 }
-                scorePanel.setScoreLabel(jeu.getScore());
-                highScorePanel.setScoreLabel(jeu.getHighScore());
+                topInfoPanel.setScore(jeu.getScore());
+                topInfoPanel.setHighscore(jeu.getHighScore());
             }
         });
     }
