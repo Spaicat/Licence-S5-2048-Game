@@ -187,7 +187,6 @@ public class Jeu extends Observable {
     public void action(Direction dir) {
         new Thread() { // permet de libérer le processus graphique ou de la console
             public void run() {
-                // TODO : Façon plus élégante
                 boolean hasMoved = false;
                 switch (dir) {
                     case haut:
@@ -242,10 +241,6 @@ public class Jeu extends Observable {
                 if (!deplacementPossible()) {
                     etatJeu = Etat.Perdu;
                 }
-
-                // TODO : Gagner partie si score atteint
-                // if (bestScore == WIN_SCORE)
-                // etatJeu = Etat.Gagnee;
 
                 setChanged();
                 notifyObservers();
